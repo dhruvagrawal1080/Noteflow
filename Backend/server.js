@@ -34,7 +34,9 @@ app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'Your server is up and running....'
-  });
+  }).send(
+    <h1>Server is running</h1>
+  );
 });
 
 app.listen(process.env.BACKEND_PORT, () => {
