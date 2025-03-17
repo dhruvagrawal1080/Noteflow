@@ -8,7 +8,7 @@ import loginImage from '../assets/loginImage.png';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSignupData } from '../slices/authSlice';
-import { login, sendotp } from '../services/operations/authApi';
+import { login, sendotp } from '../services/operations/authAPI';
 import { useNavigate } from 'react-router-dom';
 
 const LoginSignupTemplate = ({ template }) => {
