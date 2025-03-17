@@ -31,10 +31,7 @@ app.use('/api/reminder', reminderRoutes);
 app.use('/api/profile', profileRoutes);
 
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Your server is up and running....'
-  }).send(
+  res.send(
     <h1>Server is running</h1>
   );
 });
