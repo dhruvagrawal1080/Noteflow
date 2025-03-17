@@ -31,9 +31,7 @@ app.use('/api/reminder', reminderRoutes);
 app.use('/api/profile', profileRoutes);
 
 app.get('/', (req, res) => {
-  res.send(
-    <h1>Server is running</h1>
-  );
+  res.send('<h1>Server is running</h1>');
 });
 
 app.listen(process.env.BACKEND_PORT, () => {
