@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { HiPencilSquare } from "react-icons/hi2";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { logout } from '../services/operations/authApi';
+import { logout } from '../services/operations/authAPI';
 
 const Navbar = () => {
     const { token } = useSelector((state) => state.token);
