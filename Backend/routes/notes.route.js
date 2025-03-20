@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createNote, getNotes, updateNote, deleteNote, favoriteNote, removeFavoriteNote, getFavoriteNotes, shareNote, updateShare, getNotesSharedWithMe, updateSharedNote, getNotesSharedByMe } = require('../controllers/note.controller');
+const { createNote, getNotes, updateNote, favoriteNote, removeFavoriteNote, getFavoriteNotes, shareNote, updateShare, getNotesSharedWithMe, updateSharedNote, getNotesSharedByMe, deleteNote, restoreNote, getTrashedNotes } = require('../controllers/note.controller');
 const { auth } = require('../middleware/auth');
 
 router.post('/createNote', auth, createNote);
@@ -19,5 +19,10 @@ router.put('/updateShare', auth, updateShare);
 router.get('/shared-with-me', auth, getNotesSharedWithMe);
 router.get('/shared-by-me', auth, getNotesSharedByMe);
 router.put('/update-shared-note/:id', auth, updateSharedNote);
+
+// delete notes related routes
+router.delete('/delete-note/:id', auth, deleteNote);
+router.put('/restore-note/:id', auth, restoreNote);
+router.get('/getTrashedNotes', auth, getTrashedNotes);
 
 module.exports = router;

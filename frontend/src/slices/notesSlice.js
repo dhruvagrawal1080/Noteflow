@@ -4,7 +4,8 @@ const initialState = {
     myNotes: [],
     favoriteNotes: [],
     notesSharedByMe: [],
-    notesSharedWithMe: []
+    notesSharedWithMe: [],
+    trashedNotes: []
 }
 
 export const notesSlice = createSlice({
@@ -51,9 +52,14 @@ export const notesSlice = createSlice({
                 state.notesSharedByMe[index] = action.payload;
             }
         },
+
+        // trashed notes reducer
+        setTrashedNotes: (state, action) => {
+            state.trashedNotes = action.payload || [];
+        }
     }
 })
 
-export const { setMyNotes, pushNewNote, setFavoriteNotes, pushFavNote, removeFavNote, setNotesSharedWithMe, updateNotesSharedWithMe, setNotesSharedByMe, updateNotesSharedByMe } = notesSlice.actions
+export const { setMyNotes, pushNewNote, setFavoriteNotes, pushFavNote, removeFavNote, setNotesSharedWithMe, updateNotesSharedWithMe, setNotesSharedByMe, updateNotesSharedByMe, setTrashedNotes } = notesSlice.actions
 
 export default notesSlice.reducer

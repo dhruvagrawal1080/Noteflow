@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { HiPencilSquare } from "react-icons/hi2";
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { forgotPassword } from '../services/operations/authAPI';
+import { forgotPassword } from '../services/operations/authApi';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

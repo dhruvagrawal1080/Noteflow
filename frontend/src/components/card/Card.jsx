@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import { FaRegStar, FaRegTrashAlt, FaStar } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
-import { MdOutlineEditNote } from "react-icons/md";
+import { LuPencil } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { useRipple } from "../../customHook/useRipple"; // Import the hook
 import { formatTime } from "../../services/formatTime";
-import { favoriteNote, removeFavoriteNote } from "../../services/operations/noteAPI";
+import { deleteNote, favoriteNote, removeFavoriteNote, restoreNote } from "../../services/operations/noteAPI";
 import Modal from "../Modal";
 import ShareNoteDialog from "../ShareNoteDialog";
+import { MdOutlineRestorePage } from "react-icons/md";
 
-const Card = ({ note, isFavorite, tab }) => {
+const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
     const truncatedTitle = note.title.split(" ").slice(0, 5).join(" ") + (note.title.split(" ").length > 5 ? "..." : "");
     const truncatedContent = note.content.split(" ").slice(0, 15).join(" ") + (note.content.split(" ").length > 15 ? "..." : "");
     const [favorite, setFavorite] = useState(isFavorite);
@@ -25,6 +26,8 @@ const Card = ({ note, isFavorite, tab }) => {
     const sharedUser = note.sharedWith.find(shared => shared.user._id === user._id);
     const userPermission = sharedUser ? sharedUser.permission : (note.createdBy === user._id ? "edit" : "view");
 
+    const owner = user._id == note.createdBy;
+
     const favoriteHandler = () => {
         dispatch(favoriteNote(token, note._id, setFavorite));
     };
@@ -32,6 +35,14 @@ const Card = ({ note, isFavorite, tab }) => {
     const removeFavoriteHandler = () => {
         dispatch(removeFavoriteNote(token, note._id, setFavorite));
     };
+
+    const handleDeleteNote = () => {
+        dispatch(deleteNote(token, note._id));
+    }
+
+    const handleRestoreNote = () => {
+        dispatch(restoreNote(token, note._id));
+    }
 
     return (
         <div
@@ -56,15 +67,43 @@ const Card = ({ note, isFavorite, tab }) => {
                     <h3 className="text-lg font-bold text-[#111827]">{truncatedTitle}</h3>
                     <div className="flex items-center gap-2">
                         {/* Capture click coordinates here */}
-                        <MdOutlineEditNote
-                            size={25}
-                            onClick={(e) => {
-                                // Capture the click position
-                                setModalClickPos({ x: e.clientX, y: e.clientY });
-                                setIsModalOpen(true);
-                            }}
-                        />
-                        <IoShareSocialOutline size={20} onClick={() => setIsDialogOpen(true)} />
+                        {
+                            isTrashPage == false ?
+                                (
+                                    <>
+                                        <LuPencil
+                                            size={20}
+                                            onClick={(e) => {
+                                                // Capture the click position
+                                                setModalClickPos({ x: e.clientX, y: e.clientY });
+                                                setIsModalOpen(true);
+                                            }}
+                                        />
+                                        <IoShareSocialOutline size={20} onClick={() => setIsDialogOpen(true)} />
+                                        {
+                                            owner &&
+                                            (
+                                                <FaRegTrashAlt
+                                                    size={20}
+                                                    onClick={handleDeleteNote}
+                                                />
+                                            )
+                                        }
+                                    </>
+                                ) :
+                                (
+                                    <>
+                                        <MdOutlineRestorePage
+                                            size={23}
+                                            onClick={handleRestoreNote}
+                                        />
+                                        <FaRegTrashAlt
+                                            size={20}
+                                            onClick={handleDeleteNote}
+                                        />
+                                    </>
+                                )
+                        }
                     </div>
                 </div>
 
@@ -73,11 +112,20 @@ const Card = ({ note, isFavorite, tab }) => {
 
             <div className="flex items-center justify-between">
                 <p className="text-[#6B7280]">Updated {formatTime(note.updatedAt)} ago</p>
-                {favorite ? (
-                    <FaStar color="#FBBF24" size={20} onClick={removeFavoriteHandler} />
-                ) : (
-                    <FaRegStar size={20} onClick={favoriteHandler} />
-                )}
+                {
+                    !isTrashPage &&
+                    <>
+                        {
+                            favorite ?
+                                (
+                                    <FaStar color="#FBBF24" size={20} onClick={removeFavoriteHandler} />
+                                ) :
+                                (
+                                    <FaRegStar size={20} onClick={favoriteHandler} />
+                                )
+                        }
+                    </>
+                }
             </div>
 
             {/* Pass the click position to the Modal */}

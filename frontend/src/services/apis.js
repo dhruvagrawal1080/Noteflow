@@ -24,6 +24,9 @@ export const noteEndpoints = {
     GET_NOTES_SHARED_WITH_ME_API: BASE_URL + "/note/shared-with-me",
     GET_NOTES_SHARED_BY_ME_API: BASE_URL + "/note/shared-by-me",
     UPDATE_SHARED_NOTE_API: BASE_URL + "/note/update-shared-note/:id",
+    DELETE_NOTE_API: BASE_URL + "/note/delete-note/:id",
+    RESTORE_NOTE_API: BASE_URL + "/note/restore-note/:id",
+    GET_TRASHED_NOTES_API: BASE_URL + "/note/getTrashedNotes",
 }
 
 // Reminder endpoints
@@ -36,4 +39,12 @@ export const reminderEndpoints = {
 // Profile endpoints
 export const profileEndpoints = {
     UPDATE_PROFILE_API: BASE_URL + "/profile/update-profile",
+}
+
+// Todo endpoints
+export const todoEndpoints = {
+    CREATE_TODO_API: BASE_URL + "/todo/createTodo",
+    GET_TODOS_API: BASE_URL + "/todo/getTodos",
+    UPDATE_TODO_API: BASE_URL + "/todo/updateTodo/:id",
+    DELETE_TODO_API: BASE_URL + "/todo/deleteTodo/:id",
 }

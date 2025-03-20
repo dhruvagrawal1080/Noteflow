@@ -4,7 +4,7 @@ import { HiPencilSquare } from "react-icons/hi2";
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { changePassword } from '../services/operations/authAPI';
+import { changePassword } from '../services/operations/authApi';
 
 const updatePassword = () => {
   const dispatch = useDispatch();

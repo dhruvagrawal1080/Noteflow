@@ -11,6 +11,7 @@ exports.auth = async (req, res, next) => {
                 message: 'Unauthorized'
             });
         }
+        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (!decoded) {
             return res.status(401).json({
@@ -24,7 +25,8 @@ exports.auth = async (req, res, next) => {
     catch (err) {
         res.status(500).json({
             success: false,
-            message: err.message
+            message: 'Please login again',
+            error: err.message
         });
     }
 };

@@ -47,6 +47,7 @@ exports.getReminders = async (req, res) => {
     }
 };
 
+// remove agenda pending
 exports.deleteReminder = async (req, res) => {
     try {
         const { reminderId } = req.params;

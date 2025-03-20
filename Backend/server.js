@@ -5,6 +5,7 @@ const notesRoutes = require('./routes/notes.route');
 const authRoutes = require('./routes/auth.route');
 const reminderRoutes = require('./routes/reminder.route');
 const profileRoutes = require('./routes/profile.route');
+const todoRoutes = require('./routes/todo.route');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
@@ -29,9 +30,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/note', notesRoutes);
 app.use('/api/reminder', reminderRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/todo', todoRoutes);
 
 app.get('/', (req, res) => {
-  res.send('<h1>Server is running</h1>');
+  res.json({
+    success: true,
+    message: 'Your server is up and running....'
+  });
 });
 
 app.listen(process.env.BACKEND_PORT, () => {

@@ -3,7 +3,7 @@ import { HiPencilSquare } from "react-icons/hi2";
 import OtpInput from 'react-otp-input';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { signup } from '../services/operations/authAPI';
+import { signup } from '../services/operations/authApi';
 
 const OTP = () => {
     const [otp, setOtp] = useState('');

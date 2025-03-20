@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FaPlus } from "react-icons/fa6";
-import CardContainer from './card/CardContainer';
-import Modal from './Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNotesSharedByMe, getNotesSharedWithMe } from '../services/operations/noteAPI';
+import CardContainer from './card/CardContainer';
+import Modal from './Modal';
 
-const NotesPageTemplate = ({ heading, notes, favoriteNotes }) => {
+const NotesPageTemplate = ({ heading, notes, favoriteNotes = [], isTrashPage = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tab, setTab] = useState('Shared with me');
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const NotesPageTemplate = ({ heading, notes, favoriteNotes }) => {
               {
                 heading !== 'Shared notes' ?
                   (
-                    <CardContainer notes={notes} favoriteNotes={favoriteNotes} />
+                    <CardContainer notes={notes} favoriteNotes={favoriteNotes} isTrashPage={isTrashPage} />
                   ) :
                   (
                     <CardContainer notes={tab == 'Shared with me' ? notesSharedWithMe : notesSharedByMe} favoriteNotes={favoriteNotes} tab={tab} />

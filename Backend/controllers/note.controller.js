@@ -128,66 +128,7 @@ exports.updateNote = async (req, res) => {
     }
 }
 
-exports.deleteNote = async (req, res) => {
-    try {
-        const note = await Note.findByIdAndDelete({ _id: req.params.id });
-        if (!note) {
-            return res.status(400).json({
-                success: false,
-                message: 'Note not found'
-            });
-        }
-        const user = await User.findById(req.user._id);
-        user.notes = user.notes.filter(noteId => noteId.toString() !== req.params.id);
-        await user.save();
-
-        return res.status(200).json({
-            success: true,
-            message: 'Note deleted successfully'
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-    }
-} // abhi dekhna hai
-
 // Shared note controller
-exports.getSharedNotes = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id).populate('sharedNotes');
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
-
-        const sharedNotes = user.sharedNotes;
-
-        if (!sharedNotes || sharedNotes.length === 0) {
-            return res.status(200).json({
-                success: false,
-                message: 'No notes found'
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            data: sharedNotes,
-            message: 'Shared notes fetched successfully'
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-    }
-} // abhi dekhna hai - '|'
-
 exports.getNotesSharedWithMe = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).populate({
@@ -430,7 +371,7 @@ exports.updateShare = async (req, res) => {
                 select: 'firstName lastName email'
             }
         });
-        
+
         return res.status(200).json({
             success: true,
             message: permission === "remove" ? "User removed from shared access" : "Permission updated successfully",
@@ -582,6 +523,159 @@ exports.getFavoriteNotes = async (req, res) => {
 
     } catch (err) {
         return res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+};
+
+// Delete note controller
+exports.deleteNote = async (req, res) => {
+    try {
+        const note = await Note.findById(req.params.id);
+        if (!note) {
+            return res.status(400).json({
+                success: false,
+                message: 'Note not found'
+            });
+        }
+
+        const user = await User.findById(req.user._id);
+
+        // If note is already in trash, permanently delete it
+        if (note.deletedAt) {
+            await Note.findByIdAndDelete(req.params.id);
+
+            // Update the user's trashedNotes
+            user.trashedNotes = user.trashedNotes.filter(noteId => noteId.toString() !== req.params.id);
+            await user.save();
+
+            // Get updated trashed notes
+            const updatedUser = await User.findById(req.user._id)
+                .populate('notes')
+                .populate('trashedNotes')
+                .populate('favoriteNotes');
+
+            return res.status(200).json({
+                success: true,
+                message: 'Note permanently deleted',
+                trashedNotes: updatedUser.trashedNotes,
+                myNotes: updatedUser.notes,
+                favoriteNotes: updatedUser.favoriteNotes
+            });
+        }
+
+        // Move note to trash
+        note.deletedAt = new Date();
+
+        // Remove the note from User's `notes`, `favoriteNotes`, `sharedNotes`
+        user.notes = user.notes.filter(noteId => noteId.toString() !== req.params.id);
+        user.favoriteNotes = user.favoriteNotes.filter(noteId => noteId.toString() !== req.params.id);
+        if (!user.trashedNotes.includes(req.params.id)) { // Add to trash
+            user.trashedNotes.push(req.params.id);
+        }
+        await user.save();
+
+        if (note.sharedWith.length > 0) {
+            await User.updateMany(
+                { _id: { $in: note.sharedWith.map(entry => entry.user) } },
+                { $pull: { sharedNotes: req.params.id } }
+            );
+
+            // Clear sharedWith list
+            note.sharedWith = [];
+            await note.save();
+        }
+
+        // Populate trashedNotes before sending response
+        const updatedUser = await User.findById(req.user._id)
+            .populate('notes')
+            .populate('trashedNotes')
+            .populate('favoriteNotes');
+
+        return res.status(200).json({
+            success: true,
+            message: 'Note moved to trash',
+            trashedNotes: updatedUser.trashedNotes,
+            myNotes: updatedUser.notes,
+            favoriteNotes: updatedUser.favoriteNotes
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+};
+
+exports.restoreNote = async (req, res) => {
+    try {
+        const note = await Note.findById(req.params.id);
+        if (!note || !note.deletedAt) {
+            return res.status(400).json({
+                success: false,
+                message: 'Note not found or not in trash'
+            });
+        }
+
+        // Restore the note
+        note.deletedAt = null;
+        
+        // Ensure the owner has edit access after restoration
+        const userId = req.user._id.toString();
+        const alreadyShared = note.sharedWith.some(entry => entry.user.toString() === userId);
+
+        if (!alreadyShared) {
+            note.sharedWith.push({ user: userId, permission: 'edit' });
+        }
+        await note.save();
+
+        // Update the user's notes and trashedNotes
+        const user = await User.findById(req.user._id);
+        user.trashedNotes = user.trashedNotes.filter(noteId => noteId.toString() !== req.params.id);
+        
+        // Ensure the note is added back to user's notes (if not already)
+        if (!user.notes.includes(req.params.id)) {
+            user.notes.push(req.params.id);
+        }
+        await user.save();
+
+        // Populate updated notes and trashed notes before sending response
+        const updatedUser = await User.findById(req.user._id)
+            .populate('notes')
+            .populate('trashedNotes');
+
+        return res.status(200).json({
+            success: true,
+            message: 'Note restored successfully',
+            myNotes: updatedUser.notes,
+            trashedNotes: updatedUser.trashedNotes
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+};
+
+exports.getTrashedNotes = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate('trashedNotes');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Trashed notes retrieved successfully',
+            trashedNotes: user.trashedNotes
+        });
+    } catch (err) {
+        res.status(500).json({
             success: false,
             message: err.message
         });
