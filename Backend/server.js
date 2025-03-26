@@ -28,6 +28,20 @@ app.use(
     credentials: true,
   })
 )
+
+// Handle CORS preflight requests
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+
+  if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -49,6 +63,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(process.env.BACKEND_PORT, () => {
-  console.log(`Server is running on port ${process.env.BACKEND_PORT}`);
+const PORT = process.env.BACKEND_PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
