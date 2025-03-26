@@ -29,8 +29,7 @@ const Modal = ({ isOpen, onClose, status, heading, title, content, noteId, permi
                 return;
             }
         }
-        noteData.title = title;
-        noteData.content = content;
+        setNoteData({ title, content });
         setIsDirty(false);
         onClose();
     };
@@ -44,12 +43,16 @@ const Modal = ({ isOpen, onClose, status, heading, title, content, noteId, permi
         if (status === 'create') {
             dispatch(createNote(token, noteData));
         } else if (status === 'update' && !tab) {
+            if (!isDirty) {
+                if (window.confirm("You have not change anything.")) {
+                    return;
+                }
+            }
             dispatch(updateNote(token, noteData, noteId));
         } else {
             dispatch(updateSharedNote(token, noteId, noteData, tab));
         }
-        noteData.title = '';
-        noteData.content = '';
+        setNoteData({ title: '', content: '' });
         setIsDirty(false);
         onClose();
     };
@@ -81,46 +84,49 @@ const Modal = ({ isOpen, onClose, status, heading, title, content, noteId, permi
                         transition={{ duration: 0.3, ease: "easeOut" }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between mb-2 cursor-auto">
-                            <p className="text-3xl font-medium">{heading}</p>
-                            {permission == 'view' && <p className="underline">View Only</p>}
-                            <div className="flex justify-end space-x-2">
-                                <button
-                                    onClick={handleClose}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded-md cursor-pointer"
-                                >
-                                    Cancel
-                                </button>
-                                {
-                                    permission == 'edit' &&
-                                    (
-                                        <button
-                                            onClick={onSave}
-                                            className="px-4 py-2 bg-[#2563EB] text-white rounded-md cursor-pointer"
-                                        >
-                                            {status === 'create' ? 'Save' : 'Update'}
-                                        </button>
-                                    )
-                                }
-
-                            </div>
+                        {/* Header */}
+                        <div className="flex flex-wrap items-center justify-between mb-3 cursor-auto">
+                            <p className="text-lg sm:text-xl md:text-2xl font-medium">{heading}</p>
+                            {permission === 'view' && <p className="underline text-sm sm:text-base">View Only</p>}
                         </div>
+
+                        {/* Note Form */}
                         <form>
                             <textarea
-                                className="w-full p-2 border-b font-semibold text-3xl outline-none h-[4rem] resize-none"
+                                className="w-full p-2 border-b border-gray-400 font-bold text-lg sm:text-xl md:text-2xl outline-none h-[4rem] resize-none"
                                 placeholder="Note Title"
                                 value={noteData.title}
-                                disabled={permission == 'view'}
+                                disabled={permission === 'view'}
                                 onChange={(e) => setNoteData({ ...noteData, title: e.target.value })}
                             />
                             <textarea
-                                className="w-full p-2 text-lg outline-none h-[20rem] resize-none"
+                                className="w-full p-2 text-base sm:text-lg outline-none h-[15rem] sm:h-[20rem] md:h-[25rem] resize-none"
                                 placeholder="Start writing your note here..."
                                 value={noteData.content}
-                                disabled={permission == 'view'}
+                                disabled={permission === 'view'}
                                 onChange={(e) => setNoteData({ ...noteData, content: e.target.value })}
                             />
                         </form>
+
+                        {/* Buttons */}
+                        <div className="flex flex-wrap justify-start sm:justify-end space-x-2 mt-3">
+                            <button
+                                onClick={handleClose}
+                                className="px-3 sm:px-4 py-2 bg-gray-500 text-white rounded-md text-sm sm:text-base cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            {
+                                permission === 'edit' && (
+                                    <button
+                                        onClick={onSave}
+                                        className="px-3 sm:px-4 py-2 bg-[#2563EB] text-white rounded-md text-sm sm:text-base cursor-pointer"
+                                    >
+                                        {status === 'create' ? 'Save' : 'Update'}
+                                    </button>
+                                )
+                            }
+                        </div>
                     </motion.div>
                 </motion.div>
             )}

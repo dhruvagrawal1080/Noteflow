@@ -86,7 +86,6 @@ exports.deleteTodo = async (req, res) => {
     try {
         const { id } = req.params;
         const email = req.user.email;
-        console.log('printing', id, email)
 
         const deletedTodo = await Todo.findOneAndDelete({ _id: id, email });
         if (!deletedTodo) {

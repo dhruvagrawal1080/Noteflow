@@ -1,6 +1,7 @@
 const Agenda = require("agenda");
 const Reminder = require("../models/reminder.model");
 const mailSender = require("./mailSender");
+const { reminderEmail } = require("../templates/reminderTemplate");
 require('dotenv').config();
 
 const agenda = new Agenda({ db: { address: process.env.MONGO_URI } });
@@ -13,7 +14,10 @@ agenda.define("send reminder email", async (job) => {
     const reminder = await Reminder.findById(reminderId);
     if (!reminder || reminder.isSent) return;
 
-    await mailSender(email, `Reminder: ${title}`, `Don't forget: ${description}`);
+    await mailSender(
+        email, `⏰ Reminder: ${title}`,
+        reminderEmail(title, description)
+    );
 
     // Mark as sent
     await Reminder.findByIdAndUpdate(reminderId, { isSent: true });

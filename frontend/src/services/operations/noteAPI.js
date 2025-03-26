@@ -2,24 +2,23 @@ import toast from 'react-hot-toast';
 import { noteEndpoints } from '../../services/apis';
 import { setMyNotes, setFavoriteNotes, pushNewNote, pushFavNote, removeFavNote, setNotesSharedWithMe, updateNotesSharedWithMe, updateNotesSharedByMe, setNotesSharedByMe, setTrashedNotes } from '../../slices/notesSlice';
 import { apiConnector } from '../apiConnector';
-const { CREATE_NOTE_API, GET_NOTES_API, UPDATE_NOTE_API, FAVORITE_NOTE_API, REMOVE_FAVORITE_NOTE_API, GET_FAVORITE_NOTES_API, SHARE_NOTE_API, UPDATE_SHARE_API, GET_NOTES_SHARED_WITH_ME_API, UPDATE_SHARED_NOTE_API, GET_NOTES_SHARED_BY_ME_API, DELETE_NOTE_API, RESTORE_NOTE_API, GET_TRASHED_NOTES_API } = noteEndpoints;
+const { CREATE_NOTE_API, GET_NOTES_API, GET_NOTE_BY_ID_API, UPDATE_NOTE_API, FAVORITE_NOTE_API, REMOVE_FAVORITE_NOTE_API, GET_FAVORITE_NOTES_API, SHARE_NOTE_API, UPDATE_SHARE_API, GET_NOTES_SHARED_WITH_ME_API, UPDATE_SHARED_NOTE_API, GET_NOTES_SHARED_BY_ME_API, DELETE_NOTE_API, RESTORE_NOTE_API, GET_TRASHED_NOTES_API } = noteEndpoints;
 
 export const createNote = (token, noteData) => {
     return async (dispatch) => {
         const toastId = toast.loading('Creating note...');
         try {
             const response = await apiConnector('POST', CREATE_NOTE_API, noteData, { Authorization: `Bearer ${token}` });
-            console.log("CREATE NOTE API RESPONSE............", response);
+            // console.log("CREATE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
             }
-            console.log('here', response?.data?.data);
             dispatch(pushNewNote(response?.data?.data));
             toast.success('Note created successfully');
         }
         catch (err) {
-            console.log("CREATE NOTE API ERROR............", err);
+            // console.log("CREATE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message);
         }
         toast.dismiss(toastId);
@@ -31,7 +30,7 @@ export const getNotes = (token) => {
         const toastId = toast.loading('Getting all notes...');
         try {
             const response = await apiConnector('GET', GET_NOTES_API, null, { Authorization: `Bearer ${token}` });
-            console.log("GET NOTES API RESPONSE............", response);
+            // console.log("GET NOTES API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -41,19 +40,44 @@ export const getNotes = (token) => {
             toast.success('Notes fetched successfully');
         }
         catch (err) {
-            console.log("GET NOTES API ERROR............", err);
+            // console.log("GET NOTES API ERROR............", err);
             toast.error(err?.response?.data?.message);
         }
         toast.dismiss(toastId);
     }
 }
 
+export const getNoteById = (noteId, setNote, setLoading) => {
+    return async (dispatch) => {
+        const toastId = toast.loading('Getting note details...');
+        setLoading(true);
+        try {
+            const response = await apiConnector('GET', GET_NOTE_BY_ID_API.replace(':id', noteId));
+            // console.log("GET NOTE BY ID API RESPONSE............", response);
+
+            if (!response.data.success) {
+                throw new Error(response.data.message);
+            }
+
+            setNote(response.data?.note);
+            toast.success('Note details fetched successfully');
+        }
+        catch (err) {
+            // console.log("GET NOTE BY ID API ERROR............", err);
+            toast.error(err?.response?.data?.message);
+            setNote(null);
+        }
+        toast.dismiss(toastId);
+        setLoading(false);
+    };
+};
+
 export const updateNote = (token, noteData, noteId) => {
     return async (dispatch) => {
         const toastId = toast.loading('Updating note...');
         try {
             const response = await apiConnector('PUT', UPDATE_NOTE_API.replace(':id', noteId), noteData, { Authorization: `Bearer ${token}` });
-            console.log("UPDATE NOTE API RESPONSE............", response);
+            // console.log("UPDATE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -64,7 +88,7 @@ export const updateNote = (token, noteData, noteId) => {
             toast.success('Note updated successfully');
         }
         catch (err) {
-            console.log("UPDATE NOTE API ERROR............", err);
+            // console.log("UPDATE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to update note");
         }
         toast.dismiss(toastId);
@@ -78,7 +102,7 @@ export const favoriteNote = (token, noteId, setFavorite) => {
         const toastId = toast.loading('Adding to favorites...');
         try {
             const response = await apiConnector('POST', FAVORITE_NOTE_API, { noteId }, { Authorization: `Bearer ${token}` });
-            console.log("FAVORITE NOTE API RESPONSE............", response);
+            // console.log("FAVORITE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -88,7 +112,7 @@ export const favoriteNote = (token, noteId, setFavorite) => {
             dispatch(pushFavNote(response?.data?.note));
             setFavorite(true);
         } catch (err) {
-            console.log("FAVORITE NOTE API ERROR............", err);
+            // console.log("FAVORITE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message);
         }
         toast.dismiss(toastId);
@@ -100,7 +124,7 @@ export const removeFavoriteNote = (token, noteId, setFavorite) => {
         const toastId = toast.loading('Removing from favorites...');
         try {
             const response = await apiConnector('DELETE', REMOVE_FAVORITE_NOTE_API, { noteId }, { Authorization: `Bearer ${token}` });
-            console.log("REMOVE FAVORITE NOTE API RESPONSE............", response);
+            // console.log("REMOVE FAVORITE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -110,7 +134,7 @@ export const removeFavoriteNote = (token, noteId, setFavorite) => {
             dispatch(removeFavNote(response?.data?.note));
             setFavorite(false);
         } catch (err) {
-            console.log("REMOVE FAVORITE NOTE API ERROR............", err);
+            // console.log("REMOVE FAVORITE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message);
         }
         toast.dismiss(toastId);
@@ -122,7 +146,7 @@ export const getFavoriteNotes = (token) => {
         const toastId = toast.loading('Fetching favorite notes...');
         try {
             const response = await apiConnector('GET', GET_FAVORITE_NOTES_API, null, { Authorization: `Bearer ${token}` });
-            console.log("GET FAVORITE NOTES API RESPONSE............", response);
+            // console.log("GET FAVORITE NOTES API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -131,7 +155,7 @@ export const getFavoriteNotes = (token) => {
             dispatch(setFavoriteNotes(response?.data?.notes));
             toast.success('Favorite notes fetched successfully');
         } catch (err) {
-            console.log("GET FAVORITE NOTES API ERROR............", err);
+            // console.log("GET FAVORITE NOTES API ERROR............", err);
             toast.error(err?.response?.data?.message);
         }
         toast.dismiss(toastId);
@@ -140,13 +164,13 @@ export const getFavoriteNotes = (token) => {
 
 // share note related api calls
 
-export const shareNote = (token, noteId, recipientEmail, permission, setLoading) => {
+export const shareNote = (token, noteId, recipientEmail, permission, sender, setLoading) => {
     return async (dispatch) => {
         const toastId = toast.loading('Sharing note...');
         setLoading(true);
         try {
-            const response = await apiConnector('POST', SHARE_NOTE_API, { noteId, recipientEmail, permission }, { Authorization: `Bearer ${token}` });
-            console.log("SHARE NOTE API RESPONSE............", response);
+            const response = await apiConnector('POST', SHARE_NOTE_API, { noteId, recipientEmail, permission, sender }, { Authorization: `Bearer ${token}` });
+            // console.log("SHARE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -156,7 +180,7 @@ export const shareNote = (token, noteId, recipientEmail, permission, setLoading)
             dispatch(setFavoriteNotes(response?.data?.favoriteNotes));
             toast.success('Note shared successfully');
         } catch (err) {
-            console.log("SHARE NOTE API ERROR............", err);
+            // console.log("SHARE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message);
         }
         toast.dismiss(toastId);
@@ -170,7 +194,7 @@ export const updateShare = (token, noteId, recipientEmail, permission, setLoadin
         setLoading(true);
         try {
             const response = await apiConnector("PUT", UPDATE_SHARE_API, { noteId, recipientEmail, permission }, { Authorization: `Bearer ${token}` });
-            console.log("UPDATE SHARE API RESPONSE............", response);
+            // console.log("UPDATE SHARE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -183,7 +207,7 @@ export const updateShare = (token, noteId, recipientEmail, permission, setLoadin
             dispatch(updateNotesSharedByMe(response?.data?.updatedNote))
 
         } catch (err) {
-            console.error("UPDATE SHARE API ERROR............", err);
+            // console.error("UPDATE SHARE API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to update sharing settings");
         }
         toast.dismiss(toastId);
@@ -197,7 +221,7 @@ export const getNotesSharedWithMe = (token, setLoading) => {
         setLoading(true);
         try {
             const response = await apiConnector("GET", GET_NOTES_SHARED_WITH_ME_API, null, { Authorization: `Bearer ${token}` });
-            console.log("GET NOTES SHARED WITH ME API RESPONSE............", response);
+            // console.log("GET NOTES SHARED WITH ME API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -209,7 +233,7 @@ export const getNotesSharedWithMe = (token, setLoading) => {
             });
 
         } catch (err) {
-            console.error("GET NOTES SHARED WITH ME API ERROR............", err);
+            // console.error("GET NOTES SHARED WITH ME API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to fetch shared with you");
         }
         toast.dismiss(toastId);
@@ -223,7 +247,7 @@ export const getNotesSharedByMe = (token, setLoading) => {
         setLoading(true);
         try {
             const response = await apiConnector("GET", GET_NOTES_SHARED_BY_ME_API, null, { Authorization: `Bearer ${token}` });
-            console.log("GET NOTES SHARED BY ME API RESPONSE", response);
+            // console.log("GET NOTES SHARED BY ME API RESPONSE", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -234,7 +258,7 @@ export const getNotesSharedByMe = (token, setLoading) => {
                 style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "400px" }
             });
         } catch (err) {
-            console.error("GET NOTES SHARED BY ME API ERROR", err);
+            // console.error("GET NOTES SHARED BY ME API ERROR", err);
             toast.error(err?.response?.data?.message || "Failed to fetch notes shared by you");
         }
         toast.dismiss(toastId);
@@ -247,7 +271,7 @@ export const updateSharedNote = (token, noteId, updatedData, tab) => {
         const toastId = toast.loading("Updating note...");
         try {
             const response = await apiConnector("PUT", UPDATE_SHARED_NOTE_API.replace(':id', noteId), updatedData, { Authorization: `Bearer ${token}` });
-            console.log("UPDATE SHARED NOTE API RESPONSE............", response);
+            // console.log("UPDATE SHARED NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -258,7 +282,7 @@ export const updateSharedNote = (token, noteId, updatedData, tab) => {
 
             tab == 'Shared with me' ? dispatch(updateNotesSharedWithMe(updatedNote)) : dispatch(updateNotesSharedByMe(updatedNote));
         } catch (err) {
-            console.error("UPDATE SHARED NOTE API ERROR............", err);
+            // console.error("UPDATE SHARED NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to update the note");
         }
         toast.dismiss(toastId);
@@ -272,7 +296,7 @@ export const deleteNote = (token, noteId) => {
         const toastId = toast.loading("Deleting note...");
         try {
             const response = await apiConnector("DELETE", DELETE_NOTE_API.replace(':id', noteId), null, { Authorization: `Bearer ${token}` });
-            console.log("DELETE NOTE API RESPONSE............", response);
+            // console.log("DELETE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -283,7 +307,7 @@ export const deleteNote = (token, noteId) => {
             dispatch(setMyNotes(response.data.myNotes));
             dispatch(setFavoriteNotes(response.data.favoriteNotes));
         } catch (err) {
-            console.error("DELETE NOTE API ERROR............", err);
+            // console.error("DELETE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to delete the note");
         }
         toast.dismiss(toastId);
@@ -295,7 +319,7 @@ export const restoreNote = (token, noteId) => {
         const toastId = toast.loading("Restoring note...");
         try {
             const response = await apiConnector("PUT", RESTORE_NOTE_API.replace(':id', noteId), null, { Authorization: `Bearer ${token}` });
-            console.log("RESTORE NOTE API RESPONSE............", response);
+            // console.log("RESTORE NOTE API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -305,7 +329,7 @@ export const restoreNote = (token, noteId) => {
             dispatch(setTrashedNotes(response.data.trashedNotes));
             dispatch(setMyNotes(response.data.myNotes));
         } catch (err) {
-            console.error("RESTORE NOTE API ERROR............", err);
+            // console.error("RESTORE NOTE API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to restore the note");
         }
         toast.dismiss(toastId);
@@ -317,7 +341,7 @@ export const getTrashedNotes = (token) => {
         const toastId = toast.loading("Fetching trashed notes...");
         try {
             const response = await apiConnector("GET", GET_TRASHED_NOTES_API, null, { Authorization: `Bearer ${token}` });
-            console.log("GET TRASHED NOTES API RESPONSE............", response);
+            // console.log("GET TRASHED NOTES API RESPONSE............", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message);
@@ -326,7 +350,7 @@ export const getTrashedNotes = (token) => {
             toast.success(response.data.message);
             dispatch(setTrashedNotes(response.data.trashedNotes));
         } catch (err) {
-            console.error("GET TRASHED NOTES API ERROR............", err);
+            // console.error("GET TRASHED NOTES API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to fetch trashed notes");
         }
         toast.dismiss(toastId);

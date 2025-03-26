@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Auth endpoints
 export const authEndpoints = {
@@ -8,14 +8,15 @@ export const authEndpoints = {
     FORGOT_PASSWORD_API: BASE_URL + "/auth/forgot-password",
     CHANGE_PASSWORD_API: BASE_URL + "/auth/change-password",
     SENDOTP_API: BASE_URL + "/auth/sendotp",
+    GOOGLE_LOGIN_API: BASE_URL + "/auth/google-login",
 }
 
 // Note endpoints
 export const noteEndpoints = {
     CREATE_NOTE_API: BASE_URL + "/note/createNote",
     GET_NOTES_API: BASE_URL + "/note/getNotes",
+    GET_NOTE_BY_ID_API: BASE_URL + "/note/:id",
     UPDATE_NOTE_API: BASE_URL + "/note/updateNote/:id",
-    DELETE_NOTE_API: BASE_URL + "/note/deleteNote/:id",
     FAVORITE_NOTE_API: BASE_URL + "/note/favoriteNote",
     REMOVE_FAVORITE_NOTE_API: BASE_URL + "/note/removeFavoriteNote",
     GET_FAVORITE_NOTES_API: BASE_URL + "/note/getFavoriteNotes",
@@ -39,6 +40,7 @@ export const reminderEndpoints = {
 // Profile endpoints
 export const profileEndpoints = {
     UPDATE_PROFILE_API: BASE_URL + "/profile/update-profile",
+    UPDATE_PROFILE_PICTURE_API: BASE_URL + "/profile/update-profile-picture",
 }
 
 // Todo endpoints
@@ -47,4 +49,9 @@ export const todoEndpoints = {
     GET_TODOS_API: BASE_URL + "/todo/getTodos",
     UPDATE_TODO_API: BASE_URL + "/todo/updateTodo/:id",
     DELETE_TODO_API: BASE_URL + "/todo/deleteTodo/:id",
+}
+
+// Contact endpoints
+export const contactEndpoints = {
+    CONTACT_API: BASE_URL + "/reach/contact"
 }

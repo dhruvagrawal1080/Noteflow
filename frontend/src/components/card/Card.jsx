@@ -9,10 +9,12 @@ import { deleteNote, favoriteNote, removeFavoriteNote, restoreNote } from "../..
 import Modal from "../Modal";
 import ShareNoteDialog from "../ShareNoteDialog";
 import { MdOutlineRestorePage } from "react-icons/md";
+import DeleteForeverDialog from "../DeleteForeverDialog";
 
 const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
-    const truncatedTitle = note.title.split(" ").slice(0, 5).join(" ") + (note.title.split(" ").length > 5 ? "..." : "");
-    const truncatedContent = note.content.split(" ").slice(0, 15).join(" ") + (note.content.split(" ").length > 15 ? "..." : "");
+    const truncatedTitle = note.title.length > 50 ? `${note.title.slice(0, 50)}...` : note.title;
+    const truncatedContent = note.content.length > 120 ? `${note.content.slice(0, 120)}...` : note.content;
+
     const [favorite, setFavorite] = useState(isFavorite);
     const dispatch = useDispatch();
     const { token } = useSelector((state) => state.token);
@@ -20,6 +22,8 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { ripples, addRipple } = useRipple(); // Get ripples and event handler
     const [modalClickPos, setModalClickPos] = useState({ x: 0, y: 0 }); // State to store click coordinates for modal animation
+
+    const [isDeleteForeverDialogOpen, setDeleteForeverDialogOpen] = useState(false);
 
     // Determine the user's permission
     const { user } = useSelector((state) => state.user);
@@ -40,13 +44,17 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
         dispatch(deleteNote(token, note._id));
     }
 
+    const handlePermanentDeleteNote = () => {
+        setDeleteForeverDialogOpen(true);
+    }
+
     const handleRestoreNote = () => {
         dispatch(restoreNote(token, note._id));
     }
 
     return (
         <div
-            className="relative flex flex-col justify-between bg-white rounded-lg shadow-md border p-4 cursor-pointer mb-6 overflow-hidden"
+            className="relative flex flex-col bg-white rounded-lg shadow-md border p-4 cursor-pointer transition-all duration-200 ease-in-out hover:shadow-lg md:w-auto w-full overflow-hidden"
             onClick={(e) => addRipple(e)}
         >
             {/* Ripple Effect */}
@@ -62,9 +70,9 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                 />
             ))}
 
-            <div>
+            <div className="flex flex-col flex-grow">
                 <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-[#111827]">{truncatedTitle}</h3>
+                    <h3 className="text-lg font-bold text-[#111827] break-words word-break break-all">{truncatedTitle}</h3>
                     <div className="flex items-center gap-2">
                         {/* Capture click coordinates here */}
                         {
@@ -73,6 +81,7 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                                     <>
                                         <LuPencil
                                             size={20}
+                                            className="hover:text-blue-600"
                                             onClick={(e) => {
                                                 // Capture the click position
                                                 setModalClickPos({ x: e.clientX, y: e.clientY });
@@ -85,6 +94,7 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                                             (
                                                 <FaRegTrashAlt
                                                     size={20}
+                                                    className="hover:text-red-600"
                                                     onClick={handleDeleteNote}
                                                 />
                                             )
@@ -95,11 +105,13 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                                     <>
                                         <MdOutlineRestorePage
                                             size={23}
+                                            className="hover:text-green-600"
                                             onClick={handleRestoreNote}
                                         />
                                         <FaRegTrashAlt
                                             size={20}
-                                            onClick={handleDeleteNote}
+                                            className="hover:text-red-600"
+                                            onClick={handlePermanentDeleteNote}
                                         />
                                     </>
                                 )
@@ -107,10 +119,11 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                     </div>
                 </div>
 
-                <p className="text-gray-700 py-2">{truncatedContent}</p>
+                <p className="text-gray-700 py-2 text-sm break-words word-break break-all">{truncatedContent}</p>
             </div>
 
-            <div className="flex items-center justify-between">
+            {/* Footer (Updated Time & Favorite) */}
+            <div className="flex items-center justify-between text-sm mt-2">
                 <p className="text-[#6B7280]">Updated {formatTime(note.updatedAt)} ago</p>
                 {
                     !isTrashPage &&
@@ -118,10 +131,10 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                         {
                             favorite ?
                                 (
-                                    <FaStar color="#FBBF24" size={20} onClick={removeFavoriteHandler} />
+                                    <FaStar color="#FBBF24" size={20} className="cursor-pointer" onClick={removeFavoriteHandler} />
                                 ) :
                                 (
-                                    <FaRegStar size={20} onClick={favoriteHandler} />
+                                    <FaRegStar size={20} className="cursor-pointer" onClick={favoriteHandler} />
                                 )
                         }
                     </>
@@ -147,6 +160,14 @@ const Card = ({ note, isFavorite, tab, isTrashPage = false }) => {
                 <ShareNoteDialog
                     onClose={() => setIsDialogOpen(false)}
                     note={note}
+                />
+            }
+
+            {
+                <DeleteForeverDialog
+                    isOpen={isDeleteForeverDialogOpen}
+                    onClose={() => setDeleteForeverDialogOpen(false)}
+                    onConfirm={() => dispatch(deleteNote(token, note._id))}
                 />
             }
         </div>

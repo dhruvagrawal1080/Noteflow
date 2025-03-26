@@ -13,7 +13,7 @@ export const apiConnector = (method, url, bodyData = null, headers = null, param
         });
     }
     catch(error){
-        console.log("API call error: ", error);
+        // console.log("API call error: ", error);
         throw error;
     }
 }

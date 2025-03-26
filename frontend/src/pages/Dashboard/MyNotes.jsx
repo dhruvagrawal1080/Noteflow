@@ -18,7 +18,7 @@ const MyNotes = () => {
   }, []);
 
   return (
-    <NotesPageTemplate heading={'My Notes'} notes={myNotes} favoriteNotes={favoriteNotes} />
+    <NotesPageTemplate heading={'My Notes'} loading={loading} notes={myNotes} favoriteNotes={favoriteNotes} />
   )
 }
 

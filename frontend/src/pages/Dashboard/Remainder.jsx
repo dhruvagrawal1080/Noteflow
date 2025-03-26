@@ -118,7 +118,7 @@ const Remainder = () => {
               ></textarea>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 -mt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 -mt-2">
 
               <div className="space-y-1">
                 <label className="block text-sm text-neutral-700" htmlFor='remainder-date'>Date</label>
@@ -198,10 +198,6 @@ const Remainder = () => {
                   <p className="text-gray-500 text-center text-2xl">No reminders found</p>
                 )
             }
-
-
-
-
 
           </div>
 

@@ -17,6 +17,8 @@ import OTP from "./pages/OTP"
 import Signup from "./pages/Signup"
 import UpdatePassword from "./pages/UpdatePassword"
 import PrivateRoute from "./components/PrivateRoute"
+import NotFoundPage from "./pages/NotFoundPage "
+import NotePage from "./pages/NotePage"
 
 function App() {
 
@@ -35,6 +37,8 @@ function App() {
         <Route path="/otp" element={<OTP />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/updatePassword/:token" element={<UpdatePassword />} />
+        <Route path="/note/:noteId" element={<NotePage />} />
+        <Route path="*" element={<NotFoundPage />} />
 
         <Route element={<PrivateRoute> <Dashboard /> </PrivateRoute>} >
           <Route path="/dashboard/my-notes" element={<MyNotes />} />

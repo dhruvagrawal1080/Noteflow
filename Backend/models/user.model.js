@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
-            trim: true
+            trim: true,
+            default: null  // Google users won't have a password
         },
         firstName: {
             type: String,

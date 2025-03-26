@@ -47,11 +47,10 @@ exports.getReminders = async (req, res) => {
     }
 };
 
-// remove agenda pending
 exports.deleteReminder = async (req, res) => {
     try {
         const { reminderId } = req.params;
-        if(!reminderId){
+        if (!reminderId) {
             return res.status(400).json({
                 success: false,
                 message: "reminderId is required"
@@ -60,19 +59,19 @@ exports.deleteReminder = async (req, res) => {
 
         const reminder = await Reminder.findByIdAndDelete(reminderId);
         if (!reminder) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                message: "Reminder not found" 
+                message: "Reminder not found"
             });
         }
 
-        res.status(200).json({ 
+        res.status(200).json({
             success: true,
             message: "Reminder deleted successfully",
             reminder
         });
     } catch (err) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: err.message
         });

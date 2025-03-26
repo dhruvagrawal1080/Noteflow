@@ -1,9 +1,17 @@
-import React from 'react'
+import React from 'react';
+import AboutComponent from '../components/AboutComponent';
+import Footer from '../components/Footer';
 
 const About = () => {
   return (
-    <div>About</div>
-  )
-}
+    <div className="h-[calc(100vh-3.5rem)] overflow-auto bg-white">
 
-export default About
+      <AboutComponent />
+
+      <Footer />
+
+    </div>
+  );
+};
+
+export default About;

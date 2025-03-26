@@ -15,7 +15,17 @@ const Trash = () => {
   }, []);
 
   return (
-    <NotesPageTemplate heading={'Trashed Notes'} notes={trashedNotes} isTrashPage={true} />
+    <>
+      <NotesPageTemplate heading={'Trashed Notes'} notes={trashedNotes} isTrashPage={true} />
+      {/* {
+        (trashedNotes && trashedNotes.length > 0) &&
+        (
+          <div className="text-center mt-5 absolute top-1 right-1/2 transform translate-x-1/2">
+            <p className="text-2xl font-semibold text-gray-400">Notes will be deleted in 30 days</p>
+          </div>
+        )
+      } */}
+    </>
   )
 }
 

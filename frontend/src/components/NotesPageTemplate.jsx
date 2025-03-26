@@ -16,8 +16,6 @@ const NotesPageTemplate = ({ heading, notes, favoriteNotes = [], isTrashPage = f
   heading == 'Shared notes' &&
     (
       useEffect(() => {
-        console.log('notesSharedWithMe', notesSharedWithMe);
-        console.log('notesSharedByMe', notesSharedByMe);
         if ((!notesSharedWithMe || !notesSharedWithMe.length > 0) && tab == 'Shared with me') {
           dispatch(getNotesSharedWithMe(token, setLoading));
         }
@@ -37,8 +35,9 @@ const NotesPageTemplate = ({ heading, notes, favoriteNotes = [], isTrashPage = f
           (
             <div className='h-full w-full px-10'>
 
-              <div className='flex justify-between items-center mt-5'>
-                <p className='text-3xl font-medium'>{heading}</p>
+              <div className='flex flex-wrap gap-2 justify-between items-center mt-5'>
+                <p className='text-2xl sm:text-3xl font-medium'>{heading}</p>
+                {heading == 'Trashed Notes' && <p className="text-sm sm:text-lg md:text-xl font-semibold text-gray-400 text-center sm:text-left">Notes will be deleted in 30 days</p>}
                 <div className='flex items-center gap-2 border rounded-lg py-2 px-4 bg-[#2563EB] text-white font-semibold cursor-pointer' onClick={() => setIsModalOpen(true)}>
                   <FaPlus />
                   New Note
@@ -51,10 +50,10 @@ const NotesPageTemplate = ({ heading, notes, favoriteNotes = [], isTrashPage = f
                   <div className='flex pt-4 border-b-1 border-[#E5E7EB]'>
                     <p
                       onClick={() => setTab('Shared with me')}
-                      className={`px-4 py-2 cursor-pointer text-xl ${tab == 'Shared with me' && 'border-b-2 border-[#2563EB]'}`}>Shared with me</p>
+                      className={`px-4 py-2 cursor-pointer text-lg sm:text-xl ${tab == 'Shared with me' && 'border-b-2 border-[#2563EB]'}`}>Shared with me</p>
                     <p
                       onClick={() => setTab('Shared by me')}
-                      className={`px-4 py-2 cursor-pointer text-xl ${tab == 'Shared by me' && 'border-b-2 border-[#2563EB]'}`}>Shared by me</p>
+                      className={`px-4 py-2 cursor-pointer text-lg sm:text-xl ${tab == 'Shared by me' && 'border-b-2 border-[#2563EB]'}`}>Shared by me</p>
                   </div>
                 )
               }

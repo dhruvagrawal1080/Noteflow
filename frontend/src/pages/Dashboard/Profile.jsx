@@ -6,7 +6,6 @@ import PersonalDetailsSection from "../../components/profile/PersonalDetailsSect
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
-  console.log('user', user);  
 
   return (
     <div className="h-[calc(100vh-3.5rem)] flex justify-center items-center">

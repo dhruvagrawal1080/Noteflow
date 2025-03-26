@@ -1,5 +1,8 @@
+const mongoose = require("mongoose");
 const Note = require('../models/note.model');
 const User = require('../models/user.model');
+const { noteSharedEmail } = require("../templates/noteSharedWithYouTemplate");
+const mailSender = require("../utils/mailSender");
 
 // Note controller
 exports.createNote = async (req, res) => {
@@ -24,7 +27,7 @@ exports.createNote = async (req, res) => {
 
         note = await Note.findById(note._id).populate({
             path: 'sharedWith.user',
-            select: 'email firstName lastName'
+            select: 'email firstName lastName image'
         });
 
         return res.status(201).json({
@@ -46,13 +49,13 @@ exports.getNotes = async (req, res) => {
             path: 'notes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         }).populate({
             path: 'favoriteNotes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         });
         const allNotes = user.notes
@@ -76,6 +79,40 @@ exports.getNotes = async (req, res) => {
         });
     }
 }
+
+exports.getNoteById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Note ID",
+            });
+        }
+
+        const note = await Note.findById(id).populate("createdBy", "firstName lastName email");
+        if (!note) {
+            return res.status(404).json({
+                success: false,
+                message: "Note not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Note retrieved successfully",
+            note,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: err.message,
+        });
+    }
+};
+
 
 exports.updateNote = async (req, res) => {
     try {
@@ -103,13 +140,13 @@ exports.updateNote = async (req, res) => {
             path: 'notes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         }).populate({
             path: 'favoriteNotes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         });
 
@@ -135,7 +172,7 @@ exports.getNotesSharedWithMe = async (req, res) => {
             path: 'sharedNotes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         });
 
@@ -165,7 +202,7 @@ exports.getNotesSharedByMe = async (req, res) => {
         const notes = await Note.find({
             createdBy: req.user._id,
             sharedWith: { $exists: true, $ne: [], $elemMatch: { "user": { $ne: req.user._id } } } // Ensure it's actually shared
-        }).populate('sharedWith.user', 'firstName lastName email');
+        }).populate('sharedWith.user', 'firstName lastName email image');
 
         return res.status(200).json({
             success: true,
@@ -193,7 +230,7 @@ exports.updateSharedNote = async (req, res) => {
 
         const note = await Note.findById(req.params.id).populate({
             path: 'sharedWith.user',
-            select: 'firstName lastName email'
+            select: 'firstName lastName email image'
         })
         if (!note) {
             return res.status(400).json({
@@ -233,7 +270,7 @@ exports.updateSharedNote = async (req, res) => {
 
 exports.shareNote = async (req, res) => {
     try {
-        const { noteId, recipientEmail, permission } = req.body;
+        const { noteId, recipientEmail, permission, sender } = req.body;
 
         if (!noteId || !recipientEmail) {
             return res.status(400).json({
@@ -279,15 +316,21 @@ exports.shareNote = async (req, res) => {
             path: 'notes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         }).populate({
             path: 'favoriteNotes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         });
+
+        mailSender(
+            recipientEmail,
+            "📌 A Note has been Shared with You!",
+            noteSharedEmail(recipient.firstName, recipient.lastName, sender.firstName, sender.lastName, note.title, note.content, `${process.env.FRONTEND_URL}/note/${note._id}`)
+        )
 
         return res.status(200).json({
             success: true,
@@ -296,7 +339,6 @@ exports.shareNote = async (req, res) => {
             favoriteNotes: user.favoriteNotes
         });
     } catch (error) {
-        console.error('Error sharing note:', error);
         res.status(500).json({
             success: false,
             message: 'Server error'
@@ -315,7 +357,7 @@ exports.updateShare = async (req, res) => {
             });
         }
 
-        const note = await Note.findById(noteId).populate('sharedWith.user', 'firstName lastName email');
+        const note = await Note.findById(noteId).populate('sharedWith.user', 'firstName lastName email image');
         if (!note) {
             return res.status(404).json({
                 success: false,
@@ -362,13 +404,13 @@ exports.updateShare = async (req, res) => {
             path: 'notes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         }).populate({
             path: 'favoriteNotes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'firstName lastName email'
+                select: 'firstName lastName email image'
             }
         });
 
@@ -380,7 +422,6 @@ exports.updateShare = async (req, res) => {
             updatedNote: note
         });
     } catch (error) {
-        console.error('Error updating share:', error);
         res.status(500).json({
             success: false,
             message: 'Server error'
@@ -401,7 +442,7 @@ exports.favoriteNote = async (req, res) => {
 
         const note = await Note.findById(noteId).populate({
             path: 'sharedWith.user',
-            select: 'email firstName lastName',
+            select: 'email firstName lastName image',
         });
 
         if (!note) {
@@ -456,7 +497,7 @@ exports.removeFavoriteNote = async (req, res) => {
 
         const note = await Note.findById(noteId).populate({
             path: 'sharedWith.user',
-            select: 'email firstName lastName',
+            select: 'email firstName lastName image',
         });
 
         if (!note) {
@@ -505,7 +546,7 @@ exports.getFavoriteNotes = async (req, res) => {
             path: 'favoriteNotes',
             populate: {
                 path: 'sharedWith.user',
-                select: 'email firstName lastName'
+                select: 'email firstName lastName image'
             }
         });
         if (!user) {
@@ -620,7 +661,7 @@ exports.restoreNote = async (req, res) => {
 
         // Restore the note
         note.deletedAt = null;
-        
+
         // Ensure the owner has edit access after restoration
         const userId = req.user._id.toString();
         const alreadyShared = note.sharedWith.some(entry => entry.user.toString() === userId);
@@ -633,7 +674,7 @@ exports.restoreNote = async (req, res) => {
         // Update the user's notes and trashedNotes
         const user = await User.findById(req.user._id);
         user.trashedNotes = user.trashedNotes.filter(noteId => noteId.toString() !== req.params.id);
-        
+
         // Ensure the note is added back to user's notes (if not already)
         if (!user.notes.includes(req.params.id)) {
             user.notes.push(req.params.id);

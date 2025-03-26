@@ -1,12 +1,78 @@
 const User = require('../models/user.model');
-const OTP = require('../models/OTP.model');
+const OTP = require('../models/otp.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const ms = require('ms');
 const dotenv = require('dotenv');
 const mailSender = require('../utils/mailSender');
+const { OAuth2Client } = require('google-auth-library');
+const { welcomeEmail } = require('../templates/WelcomeTemplate');
+const { resetPasswordEmail } = require('../templates/resetPasswordTemplate');
+const { passwordUpdatedEmail } = require('../templates/passwordUpdateTemplate');
+const { otpEmail } = require('../templates/otpTemplate');
 dotenv.config();
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+exports.googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body; // Get the Google ID Token from frontend
+        if (!token) {
+            return res.status(400).json({
+                message: 'Token is missing'
+            });
+        }
+
+        // Verify the token with Google
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload(); // Get user info from Google
+        const { email, given_name, family_name, picture } = payload;
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            // If user does not exist, create new user
+            user = await User.create({
+                firstName: given_name,
+                lastName: family_name,
+                email,
+                image: picture,
+                password: null, // No password since they are using Google
+            });
+
+            mailSender(
+                email,
+                '🎉 Welcome to NoteFlow!',
+                welcomeEmail(user.firstName, user.lastName, user.email)
+            )
+        }
+
+        // Generate JWT token
+        const jwtToken = jwt.sign({ _id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+
+        res.cookie('token', jwtToken, {
+            expires: new Date(Date.now() + ms(process.env.JWT_EXPIRES_IN)),
+            httpOnly: true
+        }).status(201).json({
+            success: true,
+            message: 'Google login successfull',
+            user,
+            token: jwtToken
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: 'Google login failed',
+            error: err.message
+        });
+    }
+};
 
 exports.signup = async (req, res) => {
     try {
@@ -81,8 +147,8 @@ exports.signup = async (req, res) => {
         // mail user for congratulation of account creation
         mailSender(
             email,
-            'Account created successfully',
-            'Congratulation, you are now user of NoteFlow'
+            '🎉 Welcome to NoteFlow!',
+            welcomeEmail(user.firstName, user.lastName, user.email)
         )
 
         res.cookie('token', token, {
@@ -121,6 +187,12 @@ exports.login = async (req, res) => {
         }
 
         const hashedPassword = user.password;
+        if (!hashedPassword) {
+            return res.status(401).json({
+                message: 'invaid credentials'
+            });
+        }
+
         const isMatch = await bcrypt.compare(password, hashedPassword);
         if (!isMatch) {
             return res.status(401).json({
@@ -182,18 +254,18 @@ exports.forgotPassword = async (req, res) => {
         }
 
         const resetPasswordToken = crypto.randomBytes(20).toString('hex');
-        
+
         user.resetPasswordToken = resetPasswordToken;
         user.resetPasswordExpires = Date.now() + 3600000;
         user.save();
 
         // mail user for reset password link
-        const resetUrl = `http://localhost:${process.env.FRONTEND_PORT}/updatePassword/${resetPasswordToken}`;
+        const resetUrl = `${process.env.FRONTEND_URL}/updatePassword/${resetPasswordToken}`;
 
         await mailSender(
             email,
-            'Reset Password',
-            `Your Link for email verification is ${resetUrl}. Please click this url to reset your password.`
+            '🔒 Reset Your Password',
+            resetPasswordEmail(resetUrl)
         );
 
         res.status(200).json({
@@ -213,8 +285,6 @@ exports.changePassword = async (req, res) => {
     try {
         const { password, token } = req.body;
 
-        console.log('req.params', req.params);
-        console.log('token and password', token, password);
         if (!token || !password) {
             return res.status(400).json({
                 success: false,
@@ -243,8 +313,8 @@ exports.changePassword = async (req, res) => {
         // mail user for password update
         await mailSender(
             user.email,
-            'Password Updated',
-            'Your password has been updated successfully'
+            '🔑 Password Updated Successfully',
+            passwordUpdatedEmail()
         );
 
         res.status(200).json({
@@ -281,7 +351,11 @@ exports.sendotp = async (req, res) => {
         const otp = crypto.randomInt(100000, 999999);
 
         await OTP.create({ otp, email });
-        await mailSender(email, "OTP sent successfully", `Your OTP is: ${otp}`);
+        await mailSender(
+            user.email,
+            '🔐 OTP Sent Successfully',
+            otpEmail(otp)
+        );
 
         res.status(200).json({
             success: true,

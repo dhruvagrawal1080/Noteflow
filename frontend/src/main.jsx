@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import { configureStore } from '@reduxjs/toolkit'
 import { createRoot } from 'react-dom/client'
 import { Toaster } from 'react-hot-toast'
@@ -24,10 +25,12 @@ export const store = configureStore({
 })
 
 createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-        <Provider store={store}>
-            <App />
-            <Toaster />
-        </Provider>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <BrowserRouter>
+            <Provider store={store}>
+                <App />
+                <Toaster />
+            </Provider>
+        </BrowserRouter>
+    </GoogleOAuthProvider>
 )
