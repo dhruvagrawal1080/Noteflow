@@ -3,7 +3,7 @@ import { FaTimes } from "react-icons/fa";
 import { FaBars, FaPenToSquare } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { logout } from '../services/operations/authApi';
+import { logout } from '../services/operations/authAPI';
 
 const Navbar = () => {
     const { token } = useSelector((state) => state.token);

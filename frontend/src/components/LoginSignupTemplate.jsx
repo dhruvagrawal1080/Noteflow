@@ -6,7 +6,7 @@ import { FaPenToSquare } from "react-icons/fa6";
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import loginImage from '../assets/loginImage.png';
-import { googleLogin, login, sendotp } from '../services/operations/authApi';
+import { googleLogin, login, sendotp } from '../services/operations/authAPI';
 import { setSignupData } from '../slices/authSlice';
 
 const LoginSignupTemplate = ({ template }) => {
