@@ -137,7 +137,7 @@ const TodoList = () => {
                       key={todo._id}
                       className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
                     >
-                      <div className='flex flex-1 items-center gap-4'>
+                      <div className='flex flex-wrap flex-1 items-center gap-4'>
                         <input
                           type="checkbox"
                           defaultChecked={todo.completed}
@@ -159,7 +159,7 @@ const TodoList = () => {
                           placeholder="Please write something..."
                           value={updatedData.find(item => item._id === todo._id)?.task || ''}
                           disabled={!editingTasks[todo._id]}
-                          className={`flex-1 px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 ${updatedData.find(item => item._id === todo._id)?.completed ? "line-through text-neutral-500" : ""}`}
+                          className={`flex-1 w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 ${updatedData.find(item => item._id === todo._id)?.completed ? "line-through text-neutral-500" : ""}`}
                           onChange={(e) => {
                             setUpdatedData(prevData =>
                               prevData.map(item =>
