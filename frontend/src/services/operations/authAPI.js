@@ -144,7 +144,9 @@ export const changePassword = (password, token, navigate) => {
                 throw new Error(response.data.message);
             }
 
-            toast.success("Password has been reset successfully");
+            toast.success("Password has been reset successfully", {
+                style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "400px" }
+            });
             navigate('/');
         }
         catch (err) {

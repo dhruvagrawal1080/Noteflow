@@ -109,7 +109,7 @@ const TodoList = () => {
 
           {/* Task input */}
           <form
-            className="flex items-center space-x-4 mb-6"
+            className="flex flex-col sm:flex-row items-start gap-y-2 sm:items-center space-x-4 mb-6"
             onSubmit={handleSave}
           >
             <input
@@ -117,7 +117,7 @@ const TodoList = () => {
               placeholder="Add a new task..."
               value={task}
               onChange={(e) => setTask(e.target.value)}
-              className="flex-1 px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500"
+              className="flex-1 w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500"
             />
             <button
               type='submit'

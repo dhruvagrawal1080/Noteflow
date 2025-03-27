@@ -40,7 +40,9 @@ export const updateDisplayPicture = (token, formData, setLoading, setEditEnable)
                 throw new Error(response?.data?.message || "Update failed");
             }
 
-            toast.success("Profile picture updated successfully!");
+            toast.success("Profile picture updated successfully!", {
+                style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "400px" }
+            });
             dispatch(setUser(response.data.user));
             setEditEnable(false);
         }

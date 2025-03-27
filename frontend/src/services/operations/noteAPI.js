@@ -60,7 +60,9 @@ export const getNoteById = (noteId, setNote, setLoading) => {
             }
 
             setNote(response.data?.note);
-            toast.success('Note details fetched successfully');
+            toast.success('Note details fetched successfully', {
+                style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "400px" }
+            });
         }
         catch (err) {
             // console.log("GET NOTE BY ID API ERROR............", err);
@@ -153,7 +155,9 @@ export const getFavoriteNotes = (token) => {
             }
 
             dispatch(setFavoriteNotes(response?.data?.notes));
-            toast.success('Favorite notes fetched successfully');
+            toast.success('Favorite notes fetched successfully', {
+                style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "400px" }
+            });
         } catch (err) {
             // console.log("GET FAVORITE NOTES API ERROR............", err);
             toast.error(err?.response?.data?.message);

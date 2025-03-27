@@ -40,7 +40,9 @@ export const getTodos = (token, setIsSaving) => {
             }
 
             dispatch(setTodos(response.data.todos));
-            toast.success("All todos fetched successfully");
+            toast.success("All todos fetched successfully", {
+                style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "400px" }
+            });
         } catch (err) {
             // console.log("GET TODOS API ERROR............", err);
             toast.error(err?.response?.data?.message || "Failed to fetch todos");
