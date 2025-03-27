@@ -10,45 +10,42 @@ const contactRoutes = require('./routes/contact.route');
 const cookieParser = require('cookie-parser');
 const fileUpload = require("express-fileupload");
 const cors = require('cors');
-const app = express();
+require('dotenv').config();
 
-// for agendaJob Cleaning
 require('./utils/agendaJobCleaner');
 
-require('dotenv').config();
+const app = express();
+
+// Connect to Database
 connectDB();
 cloudinaryConnect();
-
-app.use(express.json());
-app.use(cookieParser());
 
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
   })
-)
+);
+app.options('*', cors()); // Handle preflight requests
 
-// Handle CORS preflight requests
+// Global CORS Fix
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-
   if (req.method === "OPTIONS") {
-      return res.sendStatus(200);
+    return res.sendStatus(200);
   }
   next();
 });
 
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp",
-  })
-)
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp" }));
 
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/note', notesRoutes);
 app.use('/api/reminder', reminderRoutes);
@@ -65,5 +62,5 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.BACKEND_PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
