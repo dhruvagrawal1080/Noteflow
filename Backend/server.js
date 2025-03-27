@@ -20,13 +20,6 @@ const app = express();
 connectDB();
 cloudinaryConnect();
 
-// Middleware to log requests
-app.use((req, res, next) => {
-  console.log(`🔹 Incoming Request: ${req.method} ${req.path}`);
-  next();
-});
-
-// ✅ CORS Middleware (Must be before any routes)
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -52,7 +45,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp" }));
 
-// ✅ Routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/note', notesRoutes);
 app.use('/api/reminder', reminderRoutes);
@@ -67,7 +60,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// ✅ Handle Undefined Routes
+// Handle Undefined Routes
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
