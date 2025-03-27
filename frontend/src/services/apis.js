@@ -1,6 +1,6 @@
 // const BASE_URL = import.meta.env.VITE_BACKEND_URL;
-const BASE_URL = 'https://noteflow-api.vercel.app/api';
-
+// const BASE_URL = 'https://noteflow-api.vercel.app/api';
+const BASE_URL = 'https://noteflow-api.onrender.com/api';
 
 // Auth endpoints
 export const authEndpoints = {
