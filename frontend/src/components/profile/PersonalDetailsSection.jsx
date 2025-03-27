@@ -112,7 +112,7 @@ const PersonalDetailsSection = ({ user }) => {
       {
         isEditEnable == false ?
           (
-            <div className='grid grid-cols-2 gap-x-10 max-w-[500px]'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-10 max-w-[500px]'>
 
               <div className="mb-2">
                 <p className="text-sm">First Name</p>

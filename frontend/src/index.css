@@ -68,13 +68,3 @@
     background-color: hsl(220, 1%, 43%);
     animation: rippleEffect 0.6s ease-out;
 }
-
-@media (orientation: landscape) and (max-width: 640px) {
-    .landscape-login {
-        margin-top: 16rem;
-    }
-    
-    .landscape-signup {
-        margin-top: 105rem;
-    }
-}

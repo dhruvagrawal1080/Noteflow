@@ -62,8 +62,8 @@ const ImageSection = ({ user }) => {
     }, [imageFile])
 
     return (
-        <div className="flex items-center justify-between rounded-md border bg-white p-8 mt-6">
-            <div className="flex items-center gap-x-4">
+        <div className="flex flex-wrap justify-center items-center sm:justify-between gap-y-4 rounded-md border bg-white p-6 sm:p-8 mt-6">
+            <div className="flex flex-col sm:flex-row text-center sm:text-start items-center gap-x-4">
                 <img
                     src={previewSource || user?.image}
                     alt={`profile-${user?.firstName || "User"}`}
