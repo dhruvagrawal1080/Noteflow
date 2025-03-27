@@ -159,7 +159,7 @@ const Remainder = () => {
         {/* Upcoming Reminders */}
         <div className="max-w-2xl mx-auto mt-8">
 
-          <h2 className="text-xl mb-4 font-semibold">Upcoming Reminders</h2>
+          <h2 className="text-2xl mb-4 font-semibold text-center">Upcoming Reminders</h2>
 
           <div className="space-y-4">
 
@@ -195,7 +195,7 @@ const Remainder = () => {
                   ))
                 ) :
                 (
-                  <p className="text-gray-500 text-center text-2xl">No reminders found</p>
+                  <p className="text-gray-500 text-center text-xl">No reminders found</p>
                 )
             }
 
