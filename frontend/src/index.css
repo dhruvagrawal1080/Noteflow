@@ -71,10 +71,10 @@
 
 @media (orientation: landscape) and (max-width: 640px) {
     .landscape-login {
-        padding-top: 16rem;
+        margin-top: 16rem;
     }
     
     .landscape-signup {
-        padding-top: 25rem;
+        margin-top: 105rem;
     }
 }

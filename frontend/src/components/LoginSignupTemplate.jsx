@@ -68,8 +68,8 @@ const LoginSignupTemplate = ({ template }) => {
                 </p>
             </div>
 
-            <div className={`h-full flex-1 flex items-center justify-center w-full overflow-auto ${template === 'login' ? 'landscape-login' : 'landscape-signup'}`}>
-                <div className='bg-white rounded-xl sm:w-[60%] w-full flex flex-col items-center py-5'>
+            <div className='h-full flex-1 flex items-center justify-center w-full overflow-auto'>
+                <div className={`bg-white rounded-xl sm:w-[60%] w-full flex flex-col items-center py-5 sm:mt-0 ${template === 'signup' && 'mt-[5rem]'}`}>
 
                     <div className='flex items-center gap-2'>
                         <FaPenToSquare size={30} color={'#2563eb'} />
