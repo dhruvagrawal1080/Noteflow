@@ -20,20 +20,27 @@ const app = express();
 connectDB();
 cloudinaryConnect();
 
+// Middleware to log requests
+app.use((req, res, next) => {
+  console.log(`🔹 Incoming Request: ${req.method} ${req.path}`);
+  next();
+});
+
+// ✅ CORS Middleware (Must be before any routes)
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
-app.options('*', cors()); // Handle preflight requests
 
-// Global CORS Fix
+// ✅ CORS Headers (for extra security)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
@@ -45,7 +52,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp" }));
 
-// Routes
+// ✅ Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/note', notesRoutes);
 app.use('/api/reminder', reminderRoutes);
@@ -60,6 +67,12 @@ app.get('/', (req, res) => {
   });
 });
 
+// ✅ Handle Undefined Routes
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+// Start Server
 const PORT = process.env.BACKEND_PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
