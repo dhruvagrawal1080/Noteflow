@@ -135,74 +135,82 @@ const TodoList = () => {
                   todos.map((todo) => (
                     <div
                       key={todo._id}
-                      className="flex items-center space-x-4 p-4 bg-neutral-50 rounded-lg"
+                      className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
                     >
-                      <input
-                        type="checkbox"
-                        defaultChecked={todo.completed}
-                        disabled={!editingTasks[todo._id]}
-                        className="w-5 h-5 border-2 border-neutral-300 rounded"
-                        onChange={(e) => {
-                          setUpdatedData(prevData =>
-                            prevData.map(item =>
-                              item._id === todo._id
-                                ? { ...item, completed: e.target.checked }
-                                : item
-                            )
-                          );
-                        }}
-                      />
+                      <div className='flex flex-1 items-center gap-4'>
+                        <input
+                          type="checkbox"
+                          defaultChecked={todo.completed}
+                          disabled={!editingTasks[todo._id]}
+                          className="w-5 h-5 border-2 border-neutral-300 rounded"
+                          onChange={(e) => {
+                            setUpdatedData(prevData =>
+                              prevData.map(item =>
+                                item._id === todo._id
+                                  ? { ...item, completed: e.target.checked }
+                                  : item
+                              )
+                            );
+                          }}
+                        />
 
-                      <input
-                        type="text"
-                        placeholder="Please write something..."
-                        value={updatedData.find(item => item._id === todo._id)?.task || ''}
-                        disabled={!editingTasks[todo._id]}
-                        className={`flex-1 px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 ${updatedData.find(item => item._id === todo._id)?.completed ? "line-through text-neutral-500" : ""}`}
-                        onChange={(e) => {
-                          setUpdatedData(prevData =>
-                            prevData.map(item =>
-                              item._id === todo._id
-                                ? { ...item, task: e.target.value }
-                                : item
-                            )
-                          );
-                        }}
-                      />
+                        <input
+                          type="text"
+                          placeholder="Please write something..."
+                          value={updatedData.find(item => item._id === todo._id)?.task || ''}
+                          disabled={!editingTasks[todo._id]}
+                          className={`flex-1 px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 ${updatedData.find(item => item._id === todo._id)?.completed ? "line-through text-neutral-500" : ""}`}
+                          onChange={(e) => {
+                            setUpdatedData(prevData =>
+                              prevData.map(item =>
+                                item._id === todo._id
+                                  ? { ...item, task: e.target.value }
+                                  : item
+                              )
+                            );
+                          }}
+                        />
+                      </div>
 
-                      <button
-                        className="text-neutral-500 hover:text-neutral-700 cursor-pointer">
-                        {
-                          !editingTasks[todo._id] ?
-                            <FaPen
-                              onClick={() => toggleEditing(todo._id)}
-                            /> :
-                            (
-                              <div className='flex items-center space-x-4'>
-                                <ImCancelCircle
-                                  onClick={() => handleCancel(todo._id)}
-                                />
-                                <FaSave
-                                  onClick={() => handleUpdate(todo._id)}
-                                />
-                              </div>
-                            )
-                        }
-                      </button>
+                      <div className="flex items-center space-x-3">
+                        {!editingTasks[todo._id] ? (
+                          <button
+                            className="text-gray-600 hover:text-gray-800 transition-all"
+                            onClick={() => toggleEditing(todo._id)}
+                          >
+                            <FaPen />
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              className="text-red-500 hover:text-red-700 transition-all"
+                              onClick={() => handleCancel(todo._id)}
+                            >
+                              <ImCancelCircle />
+                            </button>
+                            <button
+                              className="text-green-500 hover:text-green-700 transition-all"
+                              onClick={() => handleUpdate(todo._id)}
+                            >
+                              <FaSave />
+                            </button>
+                          </>
+                        )}
 
-                      <button
-                        onClick={() => handleDelete(todo._id)}
-                        className="text-neutral-500 hover:text-neutral-700 cursor-pointer">
-                        <FaTrashCan />
-                      </button>
-
+                        <button
+                          onClick={() => handleDelete(todo._id)}
+                          className="text-gray-600 hover:text-gray-800 transition-all"
+                        >
+                          <FaTrashCan />
+                        </button>
+                      </div>
                     </div>
                   ))
-                ) :
-                (
-                  <p className='text-center py-20 text-xl text-[#6A7282]'>No Todo Found</p>
-                )
-            }
+                ) : (
+                  <p className="text-center py-20 text-xl text-gray-500">
+                    No Todo Found
+                  </p>
+                )}
           </div>
         </div>
 
