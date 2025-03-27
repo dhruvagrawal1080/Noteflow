@@ -24,7 +24,7 @@ const NotePage = () => {
                 <p className="text-sm text-gray-500">Email : {note.createdBy.email}</p>
                 <h1 className="text-2xl font-bold my-2">{note.title}</h1>
                 <div className="border border-gray-200"></div>
-                <div className="mt-2 text-lg text-gray-700 h-[22rem] overflow-auto">{note.content}</div>
+                <div className="mt-2 text-lg text-gray-700 h-[26rem] overflow-auto">{note.content}</div>
             </div>
         </div>
     );

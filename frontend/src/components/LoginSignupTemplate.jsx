@@ -62,20 +62,21 @@ const LoginSignupTemplate = ({ template }) => {
     return (
         <div className='h-[calc(100vh-3.5rem)] bg-[#0084FF] flex justify-between overflow-auto'>
 
-            <div className='relative pl-20 py-20 w-[30rem] xl:flex hidden'>
-                <p className='text-white text-5xl font-serif leading-12'>Join Us, <br /> Start Organizing!</p>
-                <img src={loginImage} alt="Description" className='absolute h-[35rem] bottom-6' loading='lazy' />
+            <div className='pl-20 pt-10 w-[30rem] xl:flex hidden'>
+                <p className='text-white text-5xl font-serif leading-12 relative'>Join Us, <br /> Start Organizing!
+                <img src={loginImage} alt="Description" className='absolute h-[35rem] top-6' loading='lazy' />
+                </p>
             </div>
 
-            <div className='h-full flex-1 flex items-center justify-center w-full'>
-                <div className='bg-white rounded-xl w-[60%] flex flex-col items-center py-5 max-w-2xl'>
+            <div className={`h-full flex-1 flex items-center justify-center w-full overflow-auto ${template === 'login' ? 'landscape-login' : 'landscape-signup'}`}>
+                <div className='bg-white rounded-xl sm:w-[60%] w-full flex flex-col items-center py-5'>
 
                     <div className='flex items-center gap-2'>
                         <FaPenToSquare size={30} color={'#2563eb'} />
                         <p className='text-xl font-bold'>NoteFlow</p>
                     </div>
 
-                    <p className='text-xl md:text-3xl lg:text-4xl font-bold pt-4'>Welcome back</p>
+                    <p className='text-2xl md:text-3xl lg:text-4xl font-bold pt-4'>Welcome back</p>
                     {
                         template === 'login' ?
                             (

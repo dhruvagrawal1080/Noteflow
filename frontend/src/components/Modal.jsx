@@ -76,7 +76,7 @@ const Modal = ({ isOpen, onClose, status, heading, title, content, noteId, permi
                 >
                     {/* Modal Content */}
                     <motion.div
-                        className="bg-white p-6 rounded-lg shadow-2xl w-[50vw] relative"
+                        className="bg-white p-6 rounded-lg shadow-2xl w-full sm:w-[50vw] relative overflow-auto"
                         // The modal will start at the click position offset relative to the center, then animate to center.
                         initial={{ opacity: 0, scale: 0.5, x: offsetX, y: offsetY }}
                         animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}

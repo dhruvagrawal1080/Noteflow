@@ -1,5 +1,4 @@
-// const BASE_URL = import.meta.env.VITE_BACKEND_URL;
-const BASE_URL = 'https://noteflow-api.onrender.com/api';
+const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 // Auth endpoints
 export const authEndpoints = {

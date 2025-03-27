@@ -27,7 +27,7 @@ app.use(
   })
 );
 
-// ✅ CORS Headers (for extra security)
+// CORS Headers (for extra security)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
   res.header("Access-Control-Allow-Credentials", "true");
@@ -68,5 +68,5 @@ app.use((req, res) => {
 // Start Server
 const PORT = process.env.BACKEND_PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

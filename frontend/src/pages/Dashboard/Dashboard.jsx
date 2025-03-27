@@ -17,17 +17,17 @@ const Dashboard = () => {
                         </div>
                     ) :
                     (
-                        <div className='flex h-full w-full'>
+                        <div className='flex h-full w-full relative'>
 
                             {/* Mobile Menu Button */}
                             <button
-                                className="lg:hidden p-2 text-xs fixed z-1 top-16 left-1 bg-gray-200 rounded-md"
+                                className="lg:hidden p-2 text-xl fixed z-1 top-14 left-0 bg-gray-200 rounded-md"
                                 onClick={() => setSidebarOpen(!sidebarOpen)}
                             >
                                 <FiMenu />
                             </button>
 
-                            < div className={`fixed lg:static h-full bg-white transition-transform transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 w-70 z-50 shadow-lg`}>
+                            < div className={`fixed lg:static h-full bg-white  transition-transform transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 w-70 z-50 shadow-lg`}>
                                 <Sidebar setSidebarOpen={setSidebarOpen} />
                             </div >
 
