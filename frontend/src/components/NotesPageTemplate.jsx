@@ -50,10 +50,10 @@ const NotesPageTemplate = ({ heading, notes, favoriteNotes = [], isTrashPage = f
                   <div className='flex pt-4 border-b-1 border-[#E5E7EB]'>
                     <p
                       onClick={() => setTab('Shared with me')}
-                      className={`px-4 py-2 cursor-pointer text-lg sm:text-xl ${tab == 'Shared with me' && 'border-b-2 border-[#2563EB]'}`}>Shared with me</p>
+                      className={`px-4 py-2 cursor-pointer text-md sm:text-xl ${tab == 'Shared with me' && 'border-b-2 border-[#2563EB]'}`}>Shared with me</p>
                     <p
                       onClick={() => setTab('Shared by me')}
-                      className={`px-4 py-2 cursor-pointer text-lg sm:text-xl ${tab == 'Shared by me' && 'border-b-2 border-[#2563EB]'}`}>Shared by me</p>
+                      className={`px-4 py-2 cursor-pointer text-md sm:text-xl ${tab == 'Shared by me' && 'border-b-2 border-[#2563EB]'}`}>Shared by me</p>
                   </div>
                 )
               }
