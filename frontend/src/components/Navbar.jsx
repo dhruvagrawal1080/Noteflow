@@ -102,17 +102,20 @@ const Navbar = () => {
                     </NavLink>
                 ))}
 
-                {token ? (
-                    <div className='flex flex-col items-center w-full mt-4'>
-                        <p className='text-lg'>{user.firstName} {user.lastName}</p>
-                        <img src={user.image} className='rounded-full w-12 h-12 object-cover mt-2' alt="User" />
+                <div className="w-full flex items-center">
+                    <div className="flex-1 border-t border-gray-200"></div>
+                </div>
 
+                {token ? (
+                    <div className='flex flex-col items-center w-full'>
+                        <p className='text-lg'>{user.firstName} {user.lastName}</p>
+                        <img src={user.image} className='rounded-full w-12 h-12 object-cover mt-2' alt="User"  />
                         <Link to={'/dashboard/my-profile'} className='py-2 text-lg w-full text-center hover:bg-gray-100' onClick={() => setMenuOpen(false)}>Profile</Link>
                         <Link to={'/dashboard/my-notes'} className='py-2 text-lg w-full text-center hover:bg-gray-100' onClick={() => setMenuOpen(false)}>Dashboard</Link>
                         <button className='py-2 text-lg w-full text-center hover:bg-gray-100' onClick={() => { logoutHandler(); setMenuOpen(false); }}>Logout</button>
                     </div>
                 ) : (
-                    <div className='flex flex-col items-center w-full mt-4'>
+                    <div className='flex flex-col items-center w-full'>
                         <NavLink to={'/login'}
                             className={({ isActive }) =>
                                 `py-2 text-lg w-full text-center hover:bg-gray-100 ${isActive ? 'text-[#2563eb] font-semibold' : 'text-black'}`
