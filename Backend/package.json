@@ -7,9 +7,9 @@
     "start": "node server.js"
   },
   "keywords": [],
-  "author": "dhruv agrawal",
+  "author": "Dhruv agrawal",
   "license": "ISC",
-  "description": "backend for note flow",
+  "description": "backend for note flow web application",
   "dependencies": {
     "agenda": "^5.0.0",
     "bcrypt": "^5.1.1",
