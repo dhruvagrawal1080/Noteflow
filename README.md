@@ -31,7 +31,7 @@ Noteflow is a comprehensive note-taking application designed to help users captu
 
 - **Collaborate in Real-Time**: Share notes with team members and work together with ease.
 
-- **Real-time Notifications**: Users receive instant notifications when a note is shared with them.
+- **Real-time Notifications**: Users receive instant notifications via email when a note is shared with them.
 
 - **Organize with Tags & Favorites**: Sort notes efficiently with labels and pin important ones for quick access.
 
