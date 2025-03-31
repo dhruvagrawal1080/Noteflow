@@ -3,6 +3,7 @@
 ![Noteflow App Screenshot](./frontend/src/assets/dashboardPage.png)
 ![Noteflow App Screenshot](./frontend/src/assets/newNotePage.png)
 ![Noteflow App Screenshot](./frontend/src/assets/sharePage.png)
+![Noteflow App Screenshot](./frontend/src/assets/reminderPage.png)
 
 
 # Noteflow
