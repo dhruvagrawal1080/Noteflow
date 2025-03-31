@@ -55,14 +55,12 @@ Noteflow is a comprehensive note-taking application designed to help users captu
 - MongoDB
 - Cloudinary account for image storage
 
-### Backend Setup
-
 Clone the repository:
 ```
 git clone https://github.com/dhruvagrawal1080/Noteflow.git
 ```
 
-### Backend Setup
+## Backend Setup
 
 1. Navigate to the Backend Directory:
    ```
@@ -108,7 +106,7 @@ git clone https://github.com/dhruvagrawal1080/Noteflow.git
    npm start
    ```
 
-### Frontend Setup
+## Frontend Setup
 
 1. Navigate to the frontend directory:
    ```
