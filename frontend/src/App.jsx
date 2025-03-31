@@ -44,7 +44,7 @@ function App() {
           <Route path="/dashboard/my-notes" element={<MyNotes />} />
           <Route path="/dashboard/sharedNotes" element={<SharedNotes />} />
           <Route path="/dashboard/todoList" element={<TodoList />} />
-          <Route path="/dashboard/remainders" element={<Remainder />} />
+          <Route path="/dashboard/reminders" element={<Remainder />} />
           <Route path="/dashboard/favorites" element={<Favorites />} />
           <Route path="/dashboard/trash" element={<Trash />} />
           <Route path="/dashboard/my-profile" element={<Profile />} />

@@ -43,11 +43,11 @@ const Sidebar = ({ setSidebarOpen }) => {
                     <p className='text-xl'>To-Do List</p>
                 </NavLink>
                 <NavLink
-                    to="/dashboard/remainders"
+                    to="/dashboard/reminders"
                     onClick={() => setSidebarOpen(false)}
                     className={({ isActive }) => `flex items-center gap-4 rounded-md py-2 pl-4 pr-20 hover:bg-[#f3f4f6] ${isActive ? 'bg-[#f3f4f6]' : ''}`}>
                     <BsFillBellFill size={20} />
-                    <p className='text-xl'>Remainders</p>
+                    <p className='text-xl'>Reminders</p>
                 </NavLink>
                 <NavLink
                     to="/dashboard/favorites"
