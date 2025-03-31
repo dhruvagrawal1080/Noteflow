@@ -1,4 +1,8 @@
-![Noteflow App Screenshot](./frontend/src/assets/noteflow.png)
+![Noteflow App Screenshot](./frontend/src/assets/noteflowIcon.png)
+![Noteflow App Screenshot](./frontend/src/assets/homePage.png)
+![Noteflow App Screenshot](./frontend/src/assets/dashboardPage.png)
+![Noteflow App Screenshot](./frontend/src/assets/newNotePage.png)
+![Noteflow App Screenshot](./frontend/src/assets/sharePage.png)
 
 
 # Noteflow
@@ -13,7 +17,6 @@ Noteflow is a comprehensive note-taking application designed to help users captu
 - [Frontend Setup](#frontend-setup)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
