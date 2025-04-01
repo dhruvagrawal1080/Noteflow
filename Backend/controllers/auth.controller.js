@@ -352,7 +352,7 @@ exports.sendotp = async (req, res) => {
 
         await OTP.create({ otp, email });
         await mailSender(
-            user.email,
+            email,
             '🔐 OTP Sent Successfully',
             otpEmail(otp)
         );
