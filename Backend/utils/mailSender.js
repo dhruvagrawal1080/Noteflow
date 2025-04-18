@@ -35,10 +35,8 @@ async function mailSender(email, subject, body) {
         });
 
         console.log("Mail sent successfully:", info);
-        return info;
     } catch (error) {
         console.error("Error sending email:", error);
-        throw error;
     }
 }
 
